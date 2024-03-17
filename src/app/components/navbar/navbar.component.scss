@@ -1,0 +1,76 @@
+#nav-list {
+  width: 20%;
+  padding: 0 0 10px 0;
+  background: #3f4042;
+  font-family: Nunito, sans-serif;
+}
+
+.route-page {
+  padding: 20px 20px 20px 40px;
+  background: #3f4042;
+  font-family: sans-serif, Inter;
+  box-sizing: border-box;
+  width: 100%;
+
+  &:hover {
+    cursor: pointer;
+    //background: #282a2e;
+    //border-radius: 10px 0 0 10px;
+  }
+}
+
+#logo {
+  font-family: Nunito, sans-serif;
+  padding: 30px 20px 15px 30px;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.mat-divider {
+  border: 1.5px solid #282a2e;
+  width: 80%;
+  margin: 10px 0 10px 10%;
+}
+
+.logout {
+  padding: 10px 20px 20px 10px;
+}
+
+h1 {
+  padding: 0 1rem;
+}
+
+h2 {
+  padding: 1rem;
+}
+
+mat-sidenav-container {
+  height: 100%;
+  background: #282a2e;
+}
+
+mat-sidenav {
+  padding-top: 3.5rem;
+  @media screen and (min-width: 600px) {
+    padding-top: 4rem;
+  }
+
+  .entry {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+#main-content {
+  background: #282a2e;
+  color: #DBDFEA;
+  margin: 0 0 0 30px;
+  padding-bottom: 20px ;
+  height: auto;
+  font-family: Nunito, sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+}

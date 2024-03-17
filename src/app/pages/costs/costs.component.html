@@ -1,0 +1,12 @@
+<div class="chart-container">
+  <div class="chart-wrapper">
+    <span class="chart-title">Monthly Profit</span>
+    <span class="cost">{{monthlyProfits | currency}}</span>
+    <canvas id="cost-revenue-chart" >{{ chart }}</canvas>
+  </div>
+  <div class="chart-wrapper">
+    <div class="chart-title">Monthly Costs</div>
+    <span class="cost">{{monthlyCosts | currency}}</span>
+    <canvas id="cost-chart" >{{ chart2 }}</canvas>
+  </div>
+</div>

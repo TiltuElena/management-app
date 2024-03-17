@@ -1,0 +1,47 @@
+<div class="add-element">
+  <button class="button-new" mat-raised-button aria-label="add" (click)="enterAddMode()">
+    <mat-icon>add</mat-icon>
+    Add new product
+  </button>
+  <div *ngIf="show$ | async">
+    <form [formGroup]="addForm" class="add-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Enter name</mat-label>
+        <input matInput class="add-input" formControlName="name" required>
+        <mat-error *ngIf="addForm.controls['name'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter description</mat-label>
+        <input matInput class="add-input" formControlName="description" >
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter price</mat-label>
+        <input matInput class="add-input" formControlName="price" required>
+        <mat-error *ngIf="addForm.controls['price'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+<!--      <mat-form-field appearance="outline">-->
+<!--        <mat-label>Enter ingredients</mat-label>-->
+<!--        <input matInput class="add-input" formControlName="ingredients" required>-->
+<!--        <mat-error *ngIf="addForm.controls['ingredients'].invalid">{{getErrorRequiredMessage()}}</mat-error>-->
+<!--      </mat-form-field>-->
+
+      <div class="add-product">
+      <mat-form-field appearance="outline">
+        <mat-label>Ingredients</mat-label>
+        <mat-select formControlName="ingredients" required>
+          <mat-option *ngFor="let ingredient of chooseIngredients" [value]="ingredient.value">{{ ingredient.viewValue }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="addForm.controls['ingredients'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <button mat-button class="submit" (click)="addIngredient()"> + </button>
+      </div>
+
+      <button mat-button class="submit" *ngIf="isInAddMode$ |async" [disabled]="!addForm.valid" (click)="addProduct()">Add</button>
+      <button mat-button class="submit" *ngIf="isInEditMode$ | async" [disabled]="!addForm.valid" (click)="editProduct()">Edit</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+.chart-container {
+  width: 100%;
+  display: flex;
+  height: 530px;
+  justify-content: space-around;
+}
+
+.chart-title {
+  font-size: 25px;
+  font-weight: bold;
+  font-family: Nunito, sans-serif;
+}
+
+.cost {
+  font-size: 20px;
+  margin: 10px 0 30px 0;
+}
+
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 35%;
+}

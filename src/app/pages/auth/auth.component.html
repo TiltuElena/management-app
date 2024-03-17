@@ -1,0 +1,8 @@
+<div class="header">
+  <button mat-raised-button class="submit" (click)="signIn=true" *ngIf="!signIn">SignIn</button>
+  <button mat-raised-button class="submit" (click)="signIn=false" *ngIf="signIn">SignUp</button>
+</div>
+<section>
+  <app-signin *ngIf="signIn"></app-signin>
+  <app-signup *ngIf="!signIn"></app-signup>
+</section>

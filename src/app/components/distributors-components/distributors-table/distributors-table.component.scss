@@ -1,0 +1,37 @@
+table {
+  width: 100%;
+}
+
+.mat-header-cell {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.mat-row .mat-cell {
+  border-bottom: 1px solid #1D1E2C;
+  border-top: 1px solid #1D1E2C;
+}
+
+.mat-icon {
+  display: flex;
+  justify-content: center;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}
+
+.mat-row {
+  cursor: pointer;
+}
+
+.mat-row:hover {
+  background-color: beige;
+  cursor: pointer;
+}

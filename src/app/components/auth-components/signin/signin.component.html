@@ -1,0 +1,20 @@
+<form class="form" [formGroup]="loginForm">
+  <h2>SignIn</h2>
+  <div class="fields">
+    <mat-form-field appearance="outline">
+      <mat-label>Enter your email</mat-label>
+      <input matInput class="login-input" placeholder="email@example.com" formControlName="email" required>
+      <mat-error *ngIf="loginForm.controls['email'].invalid">{{getErrorEmailMessage()}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Enter your password</mat-label>
+      <input matInput class="login-input" [type]="hide ? 'password' : 'text'" formControlName="password" required>
+      <mat-error *ngIf="loginForm.controls['password'].invalid">{{getErrorPasswordMessage()}}</mat-error>
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+    <button mat-button class="submit" [disabled]="!loginForm.valid" (click)="submit()">Submit</button>
+  </div>
+</form>

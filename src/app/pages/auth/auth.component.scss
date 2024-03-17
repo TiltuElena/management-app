@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+section {
+  background: #282a2e;
+  height: 90%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.submit {
+  font-size: 15px;
+  padding: 15px;
+  background: #454347;
+  font-weight: bold;
+  font-family: Nunito, sans-serif;
+}
+
+.header {
+  background: #282a2e;
+  height: 10%;
+  padding: 20px 20px 0 0;
+  display: flex;
+  justify-content: end;
+}

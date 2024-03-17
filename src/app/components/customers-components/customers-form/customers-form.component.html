@@ -1,0 +1,42 @@
+<div class="add-element">
+  <div class="add-button-wrapper">
+    <button class="button-new" mat-raised-button aria-label="add" (click)="enterAddMode()">
+      <mat-icon>add</mat-icon>
+      Add new customer
+    </button>
+  </div>
+  <div *ngIf="show$ | async">
+    <form [formGroup]="addForm" class="add-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Enter first name</mat-label>
+        <input matInput class="add-input" formControlName="firstName" required>
+        <mat-error *ngIf="addForm.controls['firstName'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter last name</mat-label>
+        <input matInput class="add-input" formControlName="lastName" required>
+        <mat-error *ngIf="addForm.controls['lastName'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter phone number</mat-label>
+        <input matInput class="add-input" placeholder="+373 000 000 000" formControlName="phone" required>
+        <mat-error *ngIf="addForm.controls['phone'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter email</mat-label>
+        <input matInput class="add-input" placeholder="email@example.com" formControlName="email" required>
+        <mat-error *ngIf="addForm.controls['email'].invalid">{{getErrorEmailMessage()}}</mat-error>
+      </mat-form-field>
+
+      <button mat-button class="submit" *ngIf="isInAddMode$ |async" [disabled]="!addForm.valid" (click)="addCustomer()">
+        Add
+      </button>
+      <button mat-button class="submit" *ngIf="isInEditMode$ | async" [disabled]="!addForm.valid"
+              (click)="editCustomer()">Edit
+      </button>
+    </form>
+  </div>
+</div>

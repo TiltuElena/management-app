@@ -1,0 +1,54 @@
+input {
+  background: #1D1E2C;
+}
+
+.mat-button:hover .mat-icon {
+  color: grey;
+}
+
+.mat-form-field {
+  background: none;
+}
+
+.customer-button {
+  width: 10px;
+}
+
+.button-new {
+  padding: 25px 15px;
+  width: 210px;
+  //background: none;
+}
+
+.add-button-wrapper {
+  background: #282a2e;
+}
+
+.add-element {
+  background: #282a2e;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.add-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  background: #282a2e;
+}
+
+.submit {
+  background: #3f4042;
+  height: 50px;
+  margin-bottom: 18px;
+}
+
+.mat-input-element::placeholder {
+  color: grey;
+}
+
+.mat-error {
+  background: #282a2e;
+}

@@ -1,0 +1,41 @@
+<div class="add-element">
+  <button class="button-new" mat-raised-button aria-label="add" (click)="show = !show">
+    <mat-icon>add</mat-icon>
+    Add new distributor
+  </button>
+  <div *ngIf="show">
+    <form [formGroup]="addForm" class="add-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Enter first name</mat-label>
+        <input matInput class="add-input" formControlName="first_name" required>
+        <mat-error *ngIf="addForm.controls['first_name'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter last name</mat-label>
+        <input matInput class="add-input" formControlName="last_name" required>
+        <mat-error *ngIf="addForm.controls['last_name'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter phone number</mat-label>
+        <input matInput class="add-input" placeholder="+373 000 000 000" formControlName="telephone" required>
+        <mat-error *ngIf="addForm.controls['telephone'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter email</mat-label>
+        <input matInput class="add-input" placeholder="email@example.com" formControlName="email" required>
+        <mat-error *ngIf="addForm.controls['email'].invalid">{{getErrorEmailMessage()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Enter distributed product</mat-label>
+        <input matInput class="add-input" formControlName="distributed_product" required>
+        <mat-error *ngIf="addForm.controls['distributed_product'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <button mat-button class="submit" [disabled]="!addForm.valid"(click)="add()">Add</button>
+    </form>
+  </div>
+</div>

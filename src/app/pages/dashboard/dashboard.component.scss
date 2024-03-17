@@ -1,0 +1,37 @@
+section {
+  gap: 30px;
+  display: grid;
+  grid-template-columns: 40% 40%;
+  box-sizing: border-box;
+  padding: 40px 20px;
+  justify-content: center;
+}
+
+.card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //background: rgb(83,115,166);
+  //background: linear-gradient(40deg, rgba(83,115,166,1) 14%, rgba(36,38,58,1) 67%);
+  background: rgb(119,121,135);
+  background: linear-gradient(19deg, rgba(119,121,135,1) 39%, rgba(55,55,65,1) 65%);
+  box-sizing: border-box;
+  height: 160px;
+  border-radius: 10px;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  font-family: Nunito, sans-serif;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+}

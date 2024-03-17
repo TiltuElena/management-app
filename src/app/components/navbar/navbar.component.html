@@ -1,0 +1,26 @@
+<mat-sidenav-container autosize>
+  <mat-sidenav [opened]="true" mode="side" id="nav-list">
+    <div id="logo">CoffeeTime</div>
+    <mat-divider></mat-divider>
+    <mat-nav-list>
+      <a mat-list-item *ngFor="let route of routes" >
+        <span class="entry route-page" routerLink="{{route.link}}" routerLinkActive="active" ariaCurrentWhenActive="page">
+          <mat-icon>{{route.icon}}</mat-icon>
+          <span>{{route.title}}</span>
+        </span>
+      </a>
+      <mat-divider></mat-divider>
+      <a mat-list-item>
+        <span class="entry route-page logout" (click)="logout()" routerLinkActive="active" ariaCurrentWhenActive="page">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <h2 id="main-content">{{currentRoute}} </h2>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
