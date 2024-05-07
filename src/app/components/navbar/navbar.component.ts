@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Router, Event, NavigationEnd } from '@angular/router';
 import { PageRoutesInterface } from '../../shared/models';
-import {AuthService} from "../auth-components/auth.service";
+import {AuthService} from "../../pages/auth/services/auth.service";
 
 @Component({
   selector: 'app-navbar',
@@ -30,31 +30,31 @@ export class NavbarComponent {
     {
       id: 0,
       title: 'Dashboard',
-      link: '/main/dashboard',
+      link: '/',
       icon: 'dashboard',
     },
     {
       id: 1,
       title: 'Customers',
-      link: '/main/customers',
+      link: '/customers',
       icon: 'group',
     },
     {
       id: 2,
       title: 'Employees',
-      link: '/main/employees',
+      link: '/employees',
       icon: 'contact_mail',
     },
     {
       id: 3,
       title: 'Products',
-      link: '/main/products',
-      icon: 'local_cafe',
+      link: '/products',
+      icon: 'fastfood',
     },
     {
       id: 4,
       title: 'Orders',
-      link: '/main/orders',
+      link: '/orders',
       icon: 'receipt_long',
     },
     // {
@@ -66,7 +66,7 @@ export class NavbarComponent {
     {
       id: 5,
       title: 'Costs & Profits',
-      link: '/main/costs&Profits',
+      link: '/costs&Profits',
       icon: 'paid',
     },
   ];

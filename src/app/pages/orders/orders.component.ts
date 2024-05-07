@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrdersFormComponent } from '../../components/orders-components/orders-form/orders-form.component';
-import { OrdersTableComponent } from '../../components/orders-components/orders-table/orders-table.component';
+import { OrdersFormComponent } from './components/orders-form/orders-form.component';
+import { OrdersTableComponent } from './components/orders-table/orders-table.component';
 
 @Component({
   selector: 'app-orders',

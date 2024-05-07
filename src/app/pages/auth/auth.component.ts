@@ -5,8 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { SigninComponent } from '../../components/auth-components/signin/signin.component';
-import { SignupComponent } from '../../components/auth-components/signup/signup.component';
+import { SigninComponent } from './components/signin/signin.component';
+import { SignupComponent } from './components/signup/signup.component';
 
 @Component({
   selector: 'app-auth',

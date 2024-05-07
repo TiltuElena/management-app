@@ -12,41 +12,19 @@ import { HttpClient } from "@angular/common/http";
 })
 export class DashboardComponent {
 constructor(private httpClient: HttpClient) {}
-  url: string = 'http://localhost:4000'
+  url: string = 'http://localhost:8082'
   nr: number = 0;
 
-
-  getNrOfCustomers(){
-    return this.httpClient.get(`${this.url}/customers/count`)
-  }
-
-  getNrOfEmployees(){
-    return this.httpClient.get(`${this.url}/employees/count`)
-  }
-
-  getNrOfProducts(){
-    return this.httpClient.get(`${this.url}/products/count`)
-  }
-
-  getNrOfOrders(){
-    return this.httpClient.get(`${this.url}/orders/count`)
+  getDashboardInfo(){
+    return this.httpClient.get(`${this.url}/dashboard`)
   }
 
   ngOnInit() {
-    this.getNrOfCustomers().subscribe((res: any) => {
-      this.pages[0].quantity = res
-    })
-
-    this.getNrOfEmployees().subscribe((res: any) => {
-      this.pages[1].quantity = res
-    })
-
-    this.getNrOfProducts().subscribe((res: any) => {
-      this.pages[2].quantity = res
-    })
-
-    this.getNrOfOrders().subscribe((res: any) => {
-      this.pages[3].quantity = res
+    this.getDashboardInfo().subscribe((res:any) => {
+      this.pages[0].quantity = res.customers
+      this.pages[1].quantity = res.employees
+      this.pages[2].quantity = res.products
+      this.pages[3].quantity = res.orders
     })
   }
 
@@ -64,7 +42,7 @@ constructor(private httpClient: HttpClient) {}
     {
       name: 'Products',
       quantity: this.nr,
-      icon: 'local_cafe',
+      icon: 'fastfood',
     },
     {
       name: 'Orders',

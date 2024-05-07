@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DistributorsFormComponent } from '../../components/distributors-components/distributors-form/distributors-form.component';
-import { DistributorsTableComponent } from '../../components/distributors-components/distributors-table/distributors-table.component';
+import { DistributorsFormComponent } from './components/distributors-form/distributors-form.component';
+import { DistributorsTableComponent } from './components/distributors-table/distributors-table.component';
 
 @Component({
   selector: 'app-distributors',

@@ -1,21 +1,17 @@
 import { Routes } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AuthComponent } from './pages/auth/auth.component';
-import { authGuard } from './components/auth-components/auth.guard';
+import { authGuard } from './pages/auth/guards/auth.guard';
 
 export const routes: Routes = [
+
   {
     path: '',
-    pathMatch: 'full',
-    component: AuthComponent,
-  },
-  {
-    path: 'main',
     component: NavbarComponent,
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     children: [
       {
-        path: 'dashboard',
+        path: '',
         loadComponent: () =>
           import('./pages/dashboard/dashboard.component').then(
             (m) => m.DashboardComponent,
