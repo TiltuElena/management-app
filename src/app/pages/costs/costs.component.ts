@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Chart } from 'chart.js/auto';
 import { CostsService } from './services/costs.service';
 import { combineLatest } from 'rxjs';
+import { MdlCurrencyPipe } from '../../shared/pipes/mdl-currency.pipe';
 
 @Component({
   selector: 'app-costs',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MdlCurrencyPipe],
   templateUrl: './costs.component.html',
   styleUrl: './costs.component.scss',
 })

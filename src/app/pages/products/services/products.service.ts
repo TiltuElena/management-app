@@ -13,13 +13,12 @@ export class ProductsService {
   show$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   currentProductId$: BehaviorSubject<number> = new BehaviorSubject(0);
   source: BehaviorSubject<any> = new BehaviorSubject({});
-  ingredients$: BehaviorSubject<any> = new BehaviorSubject("");
 
   addForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
     description: new FormControl(''),
     price: new FormControl('', [Validators.required]),
-    ingredients: new FormControl('', [Validators.required]),
+    ingredients: new FormControl([], [Validators.required]),
   });
 
   url = 'http://localhost:8082'

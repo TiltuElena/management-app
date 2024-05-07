@@ -10,7 +10,8 @@ import {
 } from '@angular/material/paginator';
 import { CustomersService } from '../../services/customers.service';
 import { CustomPaginatorIntl } from './customPaginator';
-import {BehaviorSubject} from "rxjs";
+import { BehaviorSubject } from 'rxjs';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-customers-table',
@@ -24,42 +25,41 @@ export class CustomersTableComponent {
   constructor(private customersService: CustomersService) {}
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  dataSource: MatTableDataSource<CustomersInterface> =
-    new MatTableDataSource<CustomersInterface>(
-      this.customersService.source.getValue(),
-    );
+  dataSource = new MatTableDataSource<any>(
+    Array.isArray(this.customersService.source.getValue()) ? this.customersService.source.getValue() : []
+  );
 
   displayedColumns: string[] = [
     'id',
-    'first_name',
-    'last_name',
+    'firstName',
+    'lastName',
     'phone',
     'email',
     'edit',
     'delete',
   ];
 
-  totalNr: BehaviorSubject<number> = new BehaviorSubject(0)
-
+  @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit() {
     this.customersService.updateTable(0, 6);
 
     this.customersService.source.subscribe((res: any) => {
-      this.dataSource = new MatTableDataSource<CustomersInterface>(res);
+      this.dataSource = new MatTableDataSource<any>(Array.isArray(res) ? res : []);
       this.dataSource.paginator = this.paginator;
     });
-
   }
 
   ngAfterViewInit() {
     this.initPaginator();
+    this.dataSource.sort = this.sort;
   }
 
   initPaginator() {
     this.paginator.page.subscribe((event: PageEvent) => {
-      let take = event.pageSize + 1 + (event.pageSize * event.pageIndex);
-      let skip = event.pageIndex >= 2 ? event.pageSize * (event.pageIndex - 1) + 1 : 0;
+      let take = event.pageSize + 1 + event.pageSize * event.pageIndex;
+      let skip =
+        event.pageIndex >= 2 ? event.pageSize * (event.pageIndex - 1) + 1 : 0;
 
       this.customersService.skip$.next(skip);
       this.customersService.take$.next(take + event.pageSize);

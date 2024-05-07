@@ -5,22 +5,25 @@ import { ProductsInterface } from '../../../../shared/models';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductsService } from '../../services/products.service';
+import { MdlCurrencyPipe } from '../../../../shared/pipes/mdl-currency.pipe';
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-products-table',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, MdlCurrencyPipe],
   templateUrl: './products-table.component.html',
   styleUrl: './products-table.component.scss',
 })
 export class ProductsTableComponent {
   constructor(private productsService: ProductsService) {}
-  dataSource: MatTableDataSource<ProductsInterface> =
-    new MatTableDataSource<ProductsInterface>(
-      this.productsService.source.getValue(),
-    );
-  @ViewChild(MatPaginator) paginator: any;
-  products: any;
+
+  dataSource: any = new MatTableDataSource(
+    Array.isArray(this.productsService.source.getValue()) ? this.productsService.source.getValue() : [],
+  );
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
 
   displayedColumns: string[] = [
     'id',
@@ -35,7 +38,7 @@ export class ProductsTableComponent {
   ngOnInit() {
     this.productsService.updateTable();
     this.productsService.source.subscribe((res: any) => {
-      if (res) {
+      if (Array.isArray(res)) {
         const data = res.map((item: any) => {
           const ingredients = item.ingredients.map(
             (ingredient: any) => ingredient.name,
@@ -55,6 +58,10 @@ export class ProductsTableComponent {
     });
   }
 
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
+
   delete_item(product: any): void {
     console.log(product);
     this.productsService
@@ -63,21 +70,29 @@ export class ProductsTableComponent {
   }
 
   edit_item(product: any): void {
+    let ingredients: string[] = [];
+
     this.productsService.getProduct(product.id).subscribe((product: any) => {
-      console.log(product);
-      this.productsService.ingredients$.next(product.ingredients);
+      if (Array.isArray(product.ingredients)) {
+        ingredients = product.ingredients.map((ingredient: any) => {
+          return ingredient.id.toString();
+        });
+        let names =  product.ingredients.map((ingredient: any) => {
+          return ingredient.name;
+        });
+        // this.productsService.ingredients$.next(ingredients);
+        this.productsService.addForm.setValue({
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          ingredients: ingredients,
+        });
+      }
     });
 
     this.productsService.currentProductId$.next(product.id);
     this.productsService.show$.next(true);
     this.productsService.isInEditMode$.next(true);
     this.productsService.isInAddMode$.next(false);
-
-    this.productsService.addForm.setValue({
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      ingredients: product.ingredients,
-    });
   }
 }

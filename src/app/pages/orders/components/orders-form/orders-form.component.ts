@@ -42,6 +42,7 @@ export class OrdersFormComponent {
   chooseProducts: SelectInterface[] = []
   products: ProductInterface[] = []
 
+
   ngOnInit() {
     this.show$.subscribe((value: any) => (this.show = value));
 
@@ -97,9 +98,20 @@ export class OrdersFormComponent {
   }
 
   editOrder() {
+    const productId = Number(this.addForm.controls['products'].value);
+    const quantity = Number(this.addForm.controls['quantity'].value);
+    this.products.push({ productId, quantity });
+
+    const data = {
+      date: this.addForm.controls['date'].value,
+      customerId: Number(this.addForm.controls['customer'].value),
+      products: this.products
+    }
+
+    this.products = []
     this.ordersService.currentOrderId$.subscribe((value: number) => (this.currentCustomerId = value));
     this.ordersService
-      .editOrders(this.currentCustomerId, this.addForm.value)
+      .editOrders(productId, data)
       .subscribe(() => this.ordersService.updateTable());
 
     this.ordersService.isInEditMode$.next(false);

@@ -5,40 +5,49 @@ import { OrdersInterface } from '../../../../shared/models';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { OrdersService } from '../../services/orders.service';
+import { MdlCurrencyPipe } from '../../../../shared/pipes/mdl-currency.pipe';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-orders-table',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, MdlCurrencyPipe],
   templateUrl: './orders-table.component.html',
   styleUrl: './orders-table.component.scss',
 })
 export class OrdersTableComponent {
   constructor(private ordersService: OrdersService) {}
-  dataSource: MatTableDataSource<OrdersInterface> =
-    new MatTableDataSource<OrdersInterface>(
-      this.ordersService.source.getValue(),
-    );
-  @ViewChild(MatPaginator) paginator: any;
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>(
+    Array.isArray(this.ordersService.source.getValue())
+      ? this.ordersService.source.getValue()
+      : [],
+  );
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   displayedColumns: string[] = [
-    'id',
-    'customer_id',
+    'orderId',
+    'customer',
     'date',
     'products',
-    'total_price',
+    'totalPrice',
     'delete',
     'edit',
   ];
 
-  defaultCustomer: any;
-
   ngOnInit() {
     this.ordersService.updateTable();
     this.ordersService.source.subscribe((res: any) => {
-      this.dataSource = new MatTableDataSource<OrdersInterface>(res);
+      this.dataSource = new MatTableDataSource<any>(
+        Array.isArray(res) ? res : [],
+      );
       this.dataSource.paginator = this.paginator;
     });
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
   }
 
   delete_item(order: any): void {
@@ -46,28 +55,25 @@ export class OrdersTableComponent {
     this.ordersService
       .deleteOrders(order.orderId)
       .subscribe(() => this.ordersService.updateTable());
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   edit_item(order: any): void {
-    console.log(order);
-    let customerId = 0;
-    let productId = 0
     this.ordersService.getOrder(order.orderId).subscribe((order: any) => {
-      customerId = order.customer.id
-      productId = order.products[0].id
-      console.log(order)
-    })
+      console.log(order);
+
+      this.ordersService.addForm.setValue({
+        customer: order.customer.id.toString(),
+        date: order.date,
+        products: order.products[0].productId.toString(),
+        quantity: order.products[0].quantity,
+      });
+    });
 
     this.ordersService.currentOrderId$.next(order.orderId);
     this.ordersService.show$.next(true);
     this.ordersService.isInEditMode$.next(true);
     this.ordersService.isInAddMode$.next(false);
-
-    this.ordersService.addForm.setValue({
-      customer: customerId,
-      date: order.orderDate,
-      products: productId,
-      quantity: 1,
-    });
   }
 }

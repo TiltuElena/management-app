@@ -22,23 +22,41 @@
         <mat-error *ngIf="addForm.controls['price'].invalid">{{getErrorRequiredMessage()}}</mat-error>
       </mat-form-field>
 
-<!--      <mat-form-field appearance="outline">-->
+      <mat-form-field>
+        <mat-label>Ingredients</mat-label>
+        <mat-select formControlName="ingredients" required multiple (selectionChange)="onIngredientsSelectionChange($event)">
+          <mat-select-trigger>
+            {{ getSelectedIngredientsView() }}
+            @if ((selectedIngredients.length || 0) > 1) {
+              <span class="example-additional-selection">
+          (+{{(selectedIngredients.length || 0) - 1}} {{selectedIngredients.length === 2 ? 'other' : 'others'}})
+        </span>
+            }
+          </mat-select-trigger>
+          @for (ingredient of chooseIngredients; track ingredient) {
+            <mat-option [value]="ingredient.value">{{ingredient.viewValue}}</mat-option>
+          }
+        </mat-select>
+        <mat-error *ngIf="addForm.controls['ingredients'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+      </mat-form-field>
+
+      <!--      <mat-form-field appearance="outline">-->
 <!--        <mat-label>Enter ingredients</mat-label>-->
 <!--        <input matInput class="add-input" formControlName="ingredients" required>-->
 <!--        <mat-error *ngIf="addForm.controls['ingredients'].invalid">{{getErrorRequiredMessage()}}</mat-error>-->
 <!--      </mat-form-field>-->
 
-      <div class="add-product">
-      <mat-form-field appearance="outline">
-        <mat-label>Ingredients</mat-label>
-        <mat-select formControlName="ingredients" required>
-          <mat-option *ngFor="let ingredient of chooseIngredients" [value]="ingredient.value">{{ ingredient.viewValue }}</mat-option>
-        </mat-select>
-        <mat-error *ngIf="addForm.controls['ingredients'].invalid">{{getErrorRequiredMessage()}}</mat-error>
-      </mat-form-field>
+<!--      <div class="add-product">-->
+<!--      <mat-form-field appearance="outline">-->
+<!--        <mat-label>Ingredients</mat-label>-->
+<!--        <mat-select formControlName="ingredients" required>-->
+<!--          <mat-option *ngFor="let ingredient of chooseIngredients" [value]="ingredient.value">{{ ingredient.viewValue }}</mat-option>-->
+<!--        </mat-select>-->
+<!--        <mat-error *ngIf="addForm.controls['ingredients'].invalid">{{getErrorRequiredMessage()}}</mat-error>-->
+<!--      </mat-form-field>-->
 
-      <button mat-button class="submit" (click)="addIngredient()"> + </button>
-      </div>
+<!--      <button mat-button class="submit" (click)="addIngredient()"> + </button>-->
+<!--      </div>-->
 
       <button mat-button class="submit" *ngIf="isInAddMode$ |async" [disabled]="!addForm.valid" (click)="addProduct()">Add</button>
       <button mat-button class="submit" *ngIf="isInEditMode$ | async" [disabled]="!addForm.valid" (click)="editProduct()">Edit</button>

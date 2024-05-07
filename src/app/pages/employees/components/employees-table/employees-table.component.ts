@@ -5,11 +5,13 @@ import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {EmployeesInterface} from "../../../../shared/models";
 import {MatTableDataSource} from "@angular/material/table";
 import {EmployeesService} from "../../services/employees.service";
+import {MdlCurrencyPipe} from "../../../../shared/pipes/mdl-currency.pipe";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-employees-table',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, MdlCurrencyPipe],
   templateUrl: './employees-table.component.html',
   styleUrl: './employees-table.component.scss'
 })
@@ -18,6 +20,8 @@ export class EmployeesTableComponent {
   dataSource: MatTableDataSource<EmployeesInterface> = new MatTableDataSource<EmployeesInterface>(this.employeesService.source.getValue())
 
   @ViewChild(MatPaginator) paginator: any;
+  @ViewChild(MatSort) sort!: MatSort;
+
   displayedColumns: string[] = [
     'id',
     'firstName',
@@ -33,9 +37,13 @@ export class EmployeesTableComponent {
   ngOnInit() {
     this.employeesService.updateTable()
     this.employeesService.source.subscribe((res: any) => {
-      this.dataSource =  new MatTableDataSource<EmployeesInterface>(res)
+      this.dataSource =  new MatTableDataSource<any>(Array.isArray(res) ? res : [])
       this.dataSource.paginator = this.paginator;
     })
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
   }
 
   delete_item(employee: any):void {
