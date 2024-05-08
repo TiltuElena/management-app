@@ -78,13 +78,15 @@ export class NavbarComponent {
     this.currentRoute = 'Dashboard';
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd && event.url.length > 1) {
-        // this.currentRoute = event.url[1].toUpperCase() + event.url.slice(2)
         this.currentRoute = event.url.slice(1);
         this.currentRoute = this.currentRoute.slice(
           this.currentRoute.indexOf('/') + 1,
         );
         this.currentRoute =
           this.currentRoute[0].toUpperCase() + this.currentRoute.slice(1);
+      }
+      else if (event instanceof NavigationEnd) {
+        this.currentRoute = 'Dashboard'
       }
     });
   }

@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { OrdersService } from '../../services/orders.service';
 import { PopupComponent } from '../popup/popup.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 interface SelectInterface {
   value: string;
@@ -23,6 +24,7 @@ export class OrdersFormComponent {
   constructor(
     private ordersService: OrdersService,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
 
   show: boolean = false;
@@ -31,8 +33,13 @@ export class OrdersFormComponent {
   isInAddMode$: BehaviorSubject<boolean> = this.ordersService.isInAddMode$;
   addForm: FormGroup = this.ordersService.addForm;
   products$: BehaviorSubject<any> = this.ordersService.products$;
-
   customers: SelectInterface[] = [];
+
+  snackbarOptions: MatSnackBarConfig = {
+    panelClass: 'snackbar',
+    verticalPosition: 'top',
+    duration: 2000,
+  };
 
   ngOnInit() {
     this.show$.subscribe((value: any) => (this.show = value));
@@ -59,15 +66,23 @@ export class OrdersFormComponent {
       products: this.products$.getValue(),
     };
 
-    console.log(data)
+    this.ordersService.addOrders(data).subscribe((response: any) => {
+      if (response) {
+        this.snackBar.open('Success', 'Close', {
+          ...this.snackbarOptions,
+        });
 
-    this.ordersService
-      .addOrders(data)
-      .subscribe(() => this.ordersService.updateTable());
+        this.ordersService.updateTable();
+      } else {
+        this.snackBar.open(`Error`, 'Close', {
+          ...this.snackbarOptions,
+        });
+      }
+    });
 
     this.ordersService.show$.next(false);
     this.addForm.reset();
-    this.products$.next([])
+    this.products$.next([]);
   }
 
   editOrder() {
@@ -77,7 +92,7 @@ export class OrdersFormComponent {
       products: this.products$.getValue(),
     };
 
-    console.log(data)
+    console.log(data);
 
     this.ordersService
       .editOrders(this.ordersService.currentOrderId$.getValue(), data)
@@ -86,7 +101,7 @@ export class OrdersFormComponent {
     this.ordersService.isInEditMode$.next(false);
     this.ordersService.show$.next(false);
     this.addForm.reset();
-    this.products$.next([])
+    this.products$.next([]);
   }
 
   getErrorRequiredMessage(): string {
@@ -104,7 +119,7 @@ export class OrdersFormComponent {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.products$.next(result)
+        this.products$.next(result);
       }
     });
   }

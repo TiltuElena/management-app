@@ -10,7 +10,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { OrdersService } from '../../services/orders.service';
-import {OnlyNumberDirective} from "../../../../shared/directives/only-number.directive";
+import { OnlyNumberDirective } from '../../../../shared/directives/only-number.directive';
 
 interface SelectInterface {
   value: string;
@@ -26,7 +26,12 @@ interface ProductInterface {
 @Component({
   selector: 'app-popup',
   standalone: true,
-  imports: [CommonModule, MaterialModule, ReactiveFormsModule, OnlyNumberDirective],
+  imports: [
+    CommonModule,
+    MaterialModule,
+    ReactiveFormsModule,
+    OnlyNumberDirective,
+  ],
   templateUrl: './popup.component.html',
   styleUrl: './popup.component.scss',
 })
@@ -34,7 +39,7 @@ export class PopupComponent {
   form: FormGroup;
   chooseProducts: SelectInterface[] = [];
   products: ProductInterface[] = [];
-  interim = []
+  interim = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -44,11 +49,10 @@ export class PopupComponent {
     private ordersService: OrdersService,
   ) {
     if (data) {
-
-      this.interim = data
-      console.log(this.interim)
+      this.interim = data;
+      console.log(this.interim);
     } else {
-      console.log("No data");
+      console.log('No data');
     }
 
     this.form = this.formBuilder.group({
@@ -73,9 +77,8 @@ export class PopupComponent {
         const name = product ? product.viewValue : '';
 
         this.products.push({ productId, quantity, name });
-      })
+      });
     });
-
   }
 
   addProduct() {
@@ -114,10 +117,11 @@ export class PopupComponent {
   }
 
   finish() {
-    const prod = this.products.map(
-      ({ productId, quantity }) => ({ productId, quantity }),
-    );
-    this.dialogRef.close([ ...prod ]);
+    const prod = this.products.map(({ productId, quantity }) => ({
+      productId,
+      quantity,
+    }));
+    this.dialogRef.close([...prod]);
   }
 
   onNoClick(): void {

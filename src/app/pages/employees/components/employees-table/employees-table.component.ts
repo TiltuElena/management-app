@@ -1,23 +1,31 @@
-import {Component, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MaterialModule} from "../../../../shared/modules/material/material.module";
-import {MatPaginator, PageEvent} from "@angular/material/paginator";
-import {EmployeesInterface} from "../../../../shared/models";
-import {MatTableDataSource} from "@angular/material/table";
-import {EmployeesService} from "../../services/employees.service";
-import {MdlCurrencyPipe} from "../../../../shared/pipes/mdl-currency.pipe";
-import {MatSort} from "@angular/material/sort";
+import { MaterialModule } from '../../../../shared/modules/material/material.module';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { EmployeesInterface } from '../../../../shared/models';
+import { MatTableDataSource } from '@angular/material/table';
+import { EmployeesService } from '../../services/employees.service';
+import { MdlCurrencyPipe } from '../../../../shared/pipes/mdl-currency.pipe';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-employees-table',
   standalone: true,
   imports: [CommonModule, MaterialModule, MdlCurrencyPipe],
   templateUrl: './employees-table.component.html',
-  styleUrl: './employees-table.component.scss'
+  styleUrl: './employees-table.component.scss',
 })
 export class EmployeesTableComponent {
-  constructor(private employeesService: EmployeesService) {}
-  dataSource: MatTableDataSource<EmployeesInterface> = new MatTableDataSource<EmployeesInterface>(this.employeesService.source.getValue())
+  constructor(
+    private employeesService: EmployeesService,
+    private dialog: MatDialog,
+  ) {}
+  dataSource: MatTableDataSource<EmployeesInterface> =
+    new MatTableDataSource<EmployeesInterface>(
+      this.employeesService.source.getValue(),
+    );
 
   @ViewChild(MatPaginator) paginator: any;
   @ViewChild(MatSort) sort!: MatSort;
@@ -35,26 +43,38 @@ export class EmployeesTableComponent {
   ];
 
   ngOnInit() {
-    this.employeesService.updateTable()
+    this.employeesService.updateTable();
     this.employeesService.source.subscribe((res: any) => {
-      this.dataSource =  new MatTableDataSource<any>(Array.isArray(res) ? res : [])
+      this.dataSource = new MatTableDataSource<any>(
+        Array.isArray(res) ? res : [],
+      );
       this.dataSource.paginator = this.paginator;
-    })
+    });
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
   }
 
-  delete_item(employee: any):void {
-    this.employeesService.deleteEmployees(employee.id).subscribe(() => this.employeesService.updateTable())
+  delete_item(employee: any): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: '',
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        this.employeesService
+          .deleteEmployees(employee.id)
+          .subscribe(() => this.employeesService.updateTable());
+      }
+    });
   }
 
-  edit_item(employee: any):void {
-    this.employeesService.currentEmployeeId$.next(employee.id)
-    this.employeesService.show$.next(true)
-    this.employeesService.isInEditMode$.next(true)
-    this.employeesService.isInAddMode$.next(false)
+  edit_item(employee: any): void {
+    this.employeesService.currentEmployeeId$.next(employee.id);
+    this.employeesService.show$.next(true);
+    this.employeesService.isInEditMode$.next(true);
+    this.employeesService.isInAddMode$.next(false);
 
     this.employeesService.addForm.setValue({
       firstName: employee.firstName,
@@ -62,8 +82,8 @@ export class EmployeesTableComponent {
       phone: employee.phone,
       email: employee.email,
       address: employee.address,
-      salary: employee.salary
-    })
+      salary: employee.salary,
+    });
   }
 }
 

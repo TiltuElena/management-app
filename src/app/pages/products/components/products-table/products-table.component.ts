@@ -6,7 +6,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductsService } from '../../services/products.service';
 import { MdlCurrencyPipe } from '../../../../shared/pipes/mdl-currency.pipe';
-import {MatSort} from "@angular/material/sort";
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-products-table',
@@ -16,14 +18,18 @@ import {MatSort} from "@angular/material/sort";
   styleUrl: './products-table.component.scss',
 })
 export class ProductsTableComponent {
-  constructor(private productsService: ProductsService) {}
+  constructor(
+    private productsService: ProductsService,
+    private dialog: MatDialog,
+  ) {}
 
   dataSource: any = new MatTableDataSource(
-    Array.isArray(this.productsService.source.getValue()) ? this.productsService.source.getValue() : [],
+    Array.isArray(this.productsService.source.getValue())
+      ? this.productsService.source.getValue()
+      : [],
   );
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
 
   displayedColumns: string[] = [
     'id',
@@ -64,9 +70,18 @@ export class ProductsTableComponent {
 
   delete_item(product: any): void {
     console.log(product);
-    this.productsService
-      .deleteProducts(product.id)
-      .subscribe(() => this.productsService.updateTable());
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: '',
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        this.productsService
+          .deleteProducts(product.id)
+          .subscribe(() => this.productsService.updateTable());
+      }
+    });
   }
 
   edit_item(product: any): void {
@@ -77,7 +92,7 @@ export class ProductsTableComponent {
         ingredients = product.ingredients.map((ingredient: any) => {
           return ingredient.id.toString();
         });
-        let names =  product.ingredients.map((ingredient: any) => {
+        let names = product.ingredients.map((ingredient: any) => {
           return ingredient.name;
         });
         // this.productsService.ingredients$.next(ingredients);

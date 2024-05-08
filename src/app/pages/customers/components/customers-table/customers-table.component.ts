@@ -12,6 +12,8 @@ import { CustomersService } from '../../services/customers.service';
 import { CustomPaginatorIntl } from './customPaginator';
 import { BehaviorSubject } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
+import {MatDialog} from "@angular/material/dialog";
+import {ConfirmDialogComponent} from "../../../../components/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-customers-table',
@@ -22,7 +24,7 @@ import { MatSort } from '@angular/material/sort';
   // providers: [{ provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }],
 })
 export class CustomersTableComponent {
-  constructor(private customersService: CustomersService) {}
+  constructor(private customersService: CustomersService, private dialog: MatDialog,) {}
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>(
@@ -69,15 +71,24 @@ export class CustomersTableComponent {
   }
 
   delete_item(customer: any): void {
-    this.customersService
-      .deleteCustomer(customer.id)
-      .subscribe(() =>
-        this.customersService.updateTable(
-          this.customersService.skip$.getValue(),
-          this.customersService.take$.getValue(),
-        ),
-      );
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: '',
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        this.customersService
+          .deleteCustomer(customer.id)
+          .subscribe(() =>
+            this.customersService.updateTable(
+              this.customersService.skip$.getValue(),
+              this.customersService.take$.getValue(),
+            ),
+          );
+      }
+    })
   }
+
 
   edit_item(customer: any): void {
     this.customersService.currentCustomerId$.next(customer.id);
