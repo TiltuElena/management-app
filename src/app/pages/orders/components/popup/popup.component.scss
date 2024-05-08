@@ -1,0 +1,103 @@
+h1 {
+  margin: 0;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px 20px 20px;
+
+  .selected-info {
+    margin-bottom: 16px;
+
+    .selected-info-title {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+
+      li {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  .form-field-label {
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .card-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  padding: 10px 20px 20px 20px;
+}
+
+.cancel-button {
+  background-color: #e53935;
+  color: white;
+}
+
+.book-button {
+  background-color: #43a047;
+  color: white;
+}
+
+.quantity-wrap {
+  display: flex;
+  align-items: center;
+
+  span {
+    padding: 0 10px;
+  }
+}
+
+.product-list {
+  padding: 0 30px 30px 30px;
+}
+
+form {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 20px 0;
+}
+
+td {
+  padding: 10px;
+}
+
+.submit {
+  margin-bottom: 20px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e3dede;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #bdbbbb;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a5a5;
+}

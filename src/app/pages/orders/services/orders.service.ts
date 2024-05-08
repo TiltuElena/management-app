@@ -13,12 +13,11 @@ export class OrdersService {
   show$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   currentOrderId$: BehaviorSubject<number> = new BehaviorSubject(0);
   source: BehaviorSubject<any> = new BehaviorSubject({});
+  products$: BehaviorSubject<any> = new BehaviorSubject([]);
 
   addForm: FormGroup = new FormGroup({
     customer: new FormControl('', [Validators.required]),
-    date: new FormControl('', [Validators.required]),
-    products: new FormControl('', [Validators.required]),
-    quantity: new FormControl('', [Validators.required]),
+    date: new FormControl('', [Validators.required])
   });
 
   url = 'http://localhost:8082';
@@ -44,14 +43,6 @@ export class OrdersService {
     return this.httpClient.get(`${this.url}/products/${id}`);
   }
 
-  getIngredients() {
-    return this.httpClient.get(`${this.url}/ingredients`);
-  }
-
-  // getOrderCustomerName(id: number){
-  //   return this.httpClient.get(`${this.url}/customers/${id}`)
-  // }
-
   updateTable() {
     this.getOrders().subscribe((result: any) => {
       const data = result.items.map((item: any) => {
@@ -76,8 +67,8 @@ export class OrdersService {
     });
   }
 
-  editOrders(orderId: number, orderDetails: OrdersInterface) {
-    return this.httpClient.put(`${this.url}/orders/${orderId}`, orderDetails);
+  editOrders(orderId: any, order: any) {
+    return this.httpClient.put(`${this.url}/orders/${orderId}`, order);
   }
 
   deleteOrders(orderId: number) {

@@ -4,21 +4,12 @@ import { MaterialModule } from '../../../../shared/modules/material/material.mod
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { OrdersService } from '../../services/orders.service';
+import { PopupComponent } from '../popup/popup.component';
+import { MatDialog } from '@angular/material/dialog';
 
 interface SelectInterface {
   value: string;
   viewValue: string;
-}
-
-interface ProductInterface {
-  productId: number;
-  quantity: number;
-}
-
-interface CreateOrderInterface {
-  products: ProductInterface[],
-  customerId: number,
-  orderDate: Date
 }
 
 @Component({
@@ -29,19 +20,19 @@ interface CreateOrderInterface {
   styleUrl: './orders-form.component.scss',
 })
 export class OrdersFormComponent {
-  constructor(private ordersService: OrdersService) {}
+  constructor(
+    private ordersService: OrdersService,
+    private dialog: MatDialog,
+  ) {}
 
-  currentCustomerId: number = 0;
   show: boolean = false;
   show$: BehaviorSubject<boolean> = this.ordersService.show$;
   isInEditMode$: BehaviorSubject<boolean> = this.ordersService.isInEditMode$;
   isInAddMode$: BehaviorSubject<boolean> = this.ordersService.isInAddMode$;
   addForm: FormGroup = this.ordersService.addForm;
+  products$: BehaviorSubject<any> = this.ordersService.products$;
 
   customers: SelectInterface[] = [];
-  chooseProducts: SelectInterface[] = []
-  products: ProductInterface[] = []
-
 
   ngOnInit() {
     this.show$.subscribe((value: any) => (this.show = value));
@@ -49,16 +40,9 @@ export class OrdersFormComponent {
     this.ordersService.getCustomers().subscribe((data: any) => {
       this.customers = data.items.map((item: any) => ({
         value: item.id.toString(),
-        viewValue: `${item.firstName} ${item.lastName}`
+        viewValue: `${item.firstName} ${item.lastName}`,
       }));
-    })
-
-    this.ordersService.getProducts().subscribe((data: any) => {
-      this.chooseProducts = data.items.map((item: any) => ({
-        value: item.id.toString(),
-        viewValue: item.name
-      }));
-    })
+    });
   }
 
   enterAddMode(): void {
@@ -68,55 +52,41 @@ export class OrdersFormComponent {
     this.ordersService.isInEditMode$.next(false);
   }
 
-  addProduct(){
-      const productId = Number(this.addForm.controls['products'].value);
-      const quantity = Number(this.addForm.controls['quantity'].value);
-      this.products.push({ productId, quantity });
-
-      this.addForm.controls['products'].reset();
-      this.addForm.controls['quantity'].reset();
-  }
-
   addOrder(): void {
-    const productId = Number(this.addForm.controls['products'].value);
-    const quantity = Number(this.addForm.controls['quantity'].value);
-    this.products.push({ productId, quantity });
-
     const data = {
       date: this.addForm.controls['date'].value,
       customerId: Number(this.addForm.controls['customer'].value),
-      products: this.products
-    }
+      products: this.products$.getValue(),
+    };
 
-    this.products = []
-    // this.ordersService.addOrders(this.addForm.value).subscribe(() => this.ordersService.updateTable());
+    console.log(data)
 
-    this.ordersService.addOrders(data).subscribe(() => this.ordersService.updateTable());
+    this.ordersService
+      .addOrders(data)
+      .subscribe(() => this.ordersService.updateTable());
 
     this.ordersService.show$.next(false);
     this.addForm.reset();
+    this.products$.next([])
   }
 
   editOrder() {
-    const productId = Number(this.addForm.controls['products'].value);
-    const quantity = Number(this.addForm.controls['quantity'].value);
-    this.products.push({ productId, quantity });
-
     const data = {
       date: this.addForm.controls['date'].value,
       customerId: Number(this.addForm.controls['customer'].value),
-      products: this.products
-    }
+      products: this.products$.getValue(),
+    };
 
-    this.products = []
-    this.ordersService.currentOrderId$.subscribe((value: number) => (this.currentCustomerId = value));
+    console.log(data)
+
     this.ordersService
-      .editOrders(productId, data)
+      .editOrders(this.ordersService.currentOrderId$.getValue(), data)
       .subscribe(() => this.ordersService.updateTable());
 
     this.ordersService.isInEditMode$.next(false);
     this.ordersService.show$.next(false);
     this.addForm.reset();
+    this.products$.next([])
   }
 
   getErrorRequiredMessage(): string {
@@ -124,5 +94,18 @@ export class OrdersFormComponent {
       return 'You must enter a value';
     }
     return '';
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(PopupComponent, {
+      width: '500px',
+      data: [...this.products$.getValue()],
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        this.products$.next(result)
+      }
+    });
   }
 }

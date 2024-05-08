@@ -10,40 +10,31 @@
   </button>
   <div *ngIf="show$ | async">
     <form [formGroup]="addForm" class="add-form">
-
       <mat-form-field appearance="outline">
         <mat-label>Customer</mat-label>
         <mat-select formControlName="customer" required>
-          <mat-option *ngFor="let customer of customers" [value]="customer.value">{{ customer.viewValue }}</mat-option>
+          <mat-option
+            *ngFor="let customer of customers"
+            [value]="customer.value"
+            >{{ customer.viewValue }}</mat-option
+          >
         </mat-select>
-        <mat-error *ngIf="addForm.controls['customer'].invalid">{{getErrorRequiredMessage()}}</mat-error>
-      </mat-form-field>
-
-      <div class="add-product">
-
-      <mat-form-field appearance="outline">
-        <mat-label>Product</mat-label>
-        <mat-select formControlName="products" required>
-          <mat-option *ngFor="let product of chooseProducts" [value]="product.value">{{ product.viewValue }}</mat-option>
-        </mat-select>
-        <mat-error *ngIf="addForm.controls['products'].invalid">{{getErrorRequiredMessage()}}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="quantity-input">
-        <mat-label>Quantity</mat-label>
-        <input matInput class="add-input" formControlName="quantity" required />
-        <mat-error *ngIf="addForm.controls['quantity'].invalid">{{
+        <mat-error *ngIf="addForm.controls['customer'].invalid">{{
           getErrorRequiredMessage()
         }}</mat-error>
       </mat-form-field>
 
-      <button mat-button class="submit" (click)="addProduct()"> + </button>
-
-      </div>
+      <button mat-raised-button class="submit" (click)="openDialog()">Add products</button>
 
       <mat-form-field class="date" appearance="outline">
         <mat-label>Choose a date</mat-label>
-        <input matInput placeholder="DD/MM/YYYY" [matDatepicker]="picker" formControlName="date" required />
+        <input
+          matInput
+          placeholder="DD/MM/YYYY"
+          [matDatepicker]="picker"
+          formControlName="date"
+          required
+        />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
@@ -52,16 +43,17 @@
         mat-button
         class="submit"
         *ngIf="isInAddMode$ | async"
-        [disabled]="!addForm.valid"
+        [disabled]="!addForm.valid  || products$.getValue().length < 1"
         (click)="addOrder()"
       >
         Add
       </button>
+
       <button
         mat-button
         class="submit"
         *ngIf="isInEditMode$ | async"
-        [disabled]="!addForm.valid"
+        [disabled]="!addForm.valid || products$.getValue().length < 1"
         (click)="editOrder()"
       >
         Edit

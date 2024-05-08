@@ -61,17 +61,16 @@ export class OrdersTableComponent {
 
   edit_item(order: any): void {
     this.ordersService.getOrder(order.orderId).subscribe((order: any) => {
-      console.log(order);
 
       this.ordersService.addForm.setValue({
         customer: order.customer.id.toString(),
         date: order.date,
-        products: order.products[0].productId.toString(),
-        quantity: order.products[0].quantity,
       });
+
+      this.ordersService.currentOrderId$.next(order.id);
+      this.ordersService.products$.next(order.products)
     });
 
-    this.ordersService.currentOrderId$.next(order.orderId);
     this.ordersService.show$.next(true);
     this.ordersService.isInEditMode$.next(true);
     this.ordersService.isInAddMode$.next(false);
