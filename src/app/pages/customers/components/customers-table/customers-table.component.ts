@@ -1,19 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../../shared/modules/material/material.module';
+import { MaterialModule } from '@/shared/modules/material/material.module';
 import { CustomersInterface } from '../../../../shared/models';
 import { MatTableDataSource } from '@angular/material/table';
-import {
-  MatPaginator,
-  MatPaginatorIntl,
-  PageEvent,
-} from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { CustomersService } from '../../services/customers.service';
-import { CustomPaginatorIntl } from './customPaginator';
-import { BehaviorSubject } from 'rxjs';
 import { MatSort } from '@angular/material/sort';
-import {MatDialog} from "@angular/material/dialog";
-import {ConfirmDialogComponent} from "../../../../components/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '@/components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-customers-table',
@@ -21,14 +17,21 @@ import {ConfirmDialogComponent} from "../../../../components/confirm-dialog/conf
   imports: [CommonModule, MaterialModule],
   templateUrl: './customers-table.component.html',
   styleUrl: './customers-table.component.scss',
-  // providers: [{ provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }],
 })
 export class CustomersTableComponent {
-  constructor(private customersService: CustomersService, private dialog: MatDialog,) {}
+  constructor(
+    private customersService: CustomersService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+  ) {}
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
   dataSource = new MatTableDataSource<any>(
-    Array.isArray(this.customersService.source.getValue()) ? this.customersService.source.getValue() : []
+    Array.isArray(this.customersService.source.getValue())
+      ? this.customersService.source.getValue()
+      : [],
   );
 
   displayedColumns: string[] = [
@@ -41,19 +44,26 @@ export class CustomersTableComponent {
     'delete',
   ];
 
-  @ViewChild(MatSort) sort!: MatSort;
+  snackbarOptions: MatSnackBarConfig = {
+    panelClass: 'snackbar',
+    verticalPosition: 'top',
+    duration: 5000,
+  };
 
   ngOnInit() {
-    this.customersService.updateTable(0, 6);
+    this.customersService.updateTable(0, 10);
 
     this.customersService.source.subscribe((res: any) => {
-      this.dataSource = new MatTableDataSource<any>(Array.isArray(res) ? res : []);
+      this.dataSource = new MatTableDataSource<any>(
+        Array.isArray(res) ? res : [],
+      );
+
       this.dataSource.paginator = this.paginator;
     });
   }
 
   ngAfterViewInit() {
-    this.initPaginator();
+    // this.initPaginator();
     this.dataSource.sort = this.sort;
   }
 
@@ -72,23 +82,32 @@ export class CustomersTableComponent {
 
   delete_item(customer: any): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: '',
+      data: customer.id,
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.customersService
-          .deleteCustomer(customer.id)
-          .subscribe(() =>
+        this.customersService.deleteCustomer(customer.id).subscribe({
+          next: () => {
+            this.snackBar.open('Deleted successfully', 'Close', {
+              ...this.snackbarOptions,
+            });
+
             this.customersService.updateTable(
               this.customersService.skip$.getValue(),
               this.customersService.take$.getValue(),
-            ),
-          );
+            );
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error: ', error);
+            this.snackBar.open(`Error: ${error.error.message}`, 'Close', {
+              ...this.snackbarOptions,
+            });
+          },
+        });
       }
-    })
+    });
   }
-
 
   edit_item(customer: any): void {
     this.customersService.currentCustomerId$.next(customer.id);

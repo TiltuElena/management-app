@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import {
   FormBuilder,
   FormGroup,
@@ -13,19 +9,12 @@ import {
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { confirmPasswordValidator } from './confirmPassword.validator';
+import { MaterialModule } from '@/shared/modules/material/material.module';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    RouterLink,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MaterialModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })

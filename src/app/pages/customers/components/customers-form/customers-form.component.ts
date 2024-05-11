@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../../shared/modules/material/material.module';
+import { MaterialModule } from '@/shared/modules/material/material.module';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CustomersService } from '../../services/customers.service';
 import { BehaviorSubject } from 'rxjs';

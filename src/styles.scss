@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+@import "app/shared/styles/variables";
+
+
 * {
   padding: 0;
   margin: 0;
@@ -28,3 +31,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background: #3b3f45;
 }
 
+.snackbar {
+  --mdc-snackbar-container-color: var(--info);
+  --mat-snack-bar-button-color: var(--warning);
+  --mdc-snackbar-supporting-text-color: var(--white);
+}

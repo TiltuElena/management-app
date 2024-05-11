@@ -6,8 +6,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Router, Event, NavigationEnd } from '@angular/router';
-import { PageRoutesInterface } from '../../shared/models';
-import {AuthService} from "../../pages/auth/services/auth.service";
+import { PageRoutesInterface } from '@/shared/models';
+import { AuthService } from '@/pages/auth/services/auth.service';
+import { Unsubscribe } from '@/shared/classes/unsubscribe';
 
 @Component({
   selector: 'app-navbar',
@@ -25,7 +26,7 @@ import {AuthService} from "../../pages/auth/services/auth.service";
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
-export class NavbarComponent {
+export class NavbarComponent extends Unsubscribe {
   routes: PageRoutesInterface[] = [
     {
       id: 0,
@@ -74,7 +75,12 @@ export class NavbarComponent {
   currentRoute: string;
   private authTokenKey = 'auth-token';
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+  ) {
+    super();
+
     this.currentRoute = 'Dashboard';
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd && event.url.length > 1) {
@@ -84,14 +90,13 @@ export class NavbarComponent {
         );
         this.currentRoute =
           this.currentRoute[0].toUpperCase() + this.currentRoute.slice(1);
-      }
-      else if (event instanceof NavigationEnd) {
-        this.currentRoute = 'Dashboard'
+      } else if (event instanceof NavigationEnd) {
+        this.currentRoute = 'Dashboard';
       }
     });
   }
 
-  logout(){
+  logout() {
     localStorage.removeItem(this.authTokenKey);
     this.authService.isAuthenticated.next(false);
     this.router.navigate(['/']).then();

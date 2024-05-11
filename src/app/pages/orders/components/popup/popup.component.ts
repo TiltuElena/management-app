@@ -39,12 +39,11 @@ export class PopupComponent {
   form: FormGroup;
   chooseProducts: SelectInterface[] = [];
   products: ProductInterface[] = [];
-  interim = [];
+  interim: any[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<PopupComponent>,
-    private snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     private ordersService: OrdersService,
   ) {
@@ -88,13 +87,25 @@ export class PopupComponent {
       (p) => p.value === productId.toString(),
     );
     const name = product ? product.viewValue : '';
-    this.products.push({ productId, quantity, name });
+
+    let productExists = false;
+    this.products.forEach((p) => {
+      if (p.productId === productId) {
+        p.quantity += quantity;
+        productExists = true;
+      }
+    });
+
+    if (!productExists) {
+      this.products.push({ productId, quantity, name });
+    }
 
     this.form.controls['products'].reset();
     this.form.controls['quantity'].reset();
 
     this.products = [...this.products];
   }
+
 
   deleteProduct(productId: number) {
     this.products = this.products.filter(

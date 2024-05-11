@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../shared/modules/material/material.module';
+import { MaterialModule } from '@/shared/modules/material/material.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -18,11 +18,12 @@ export class ConfirmDialogComponent {
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
   ) {
     if (data) {
-      console.log(data)
+      this.message = data
     } else {
       console.log("No data");
     }
   }
+
 
   confirm(){
     this.dialogRef.close(1);

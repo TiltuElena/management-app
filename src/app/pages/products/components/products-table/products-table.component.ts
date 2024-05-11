@@ -1,14 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../../shared/modules/material/material.module';
+import { MaterialModule } from '@/shared/modules/material/material.module';
 import { ProductsInterface } from '../../../../shared/models';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductsService } from '../../services/products.service';
-import { MdlCurrencyPipe } from '../../../../shared/pipes/mdl-currency.pipe';
+import { MdlCurrencyPipe } from '@/shared/pipes/mdl-currency.pipe';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@/components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-products-table',
@@ -21,7 +22,14 @@ export class ProductsTableComponent {
   constructor(
     private productsService: ProductsService,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
+
+  snackbarOptions: MatSnackBarConfig = {
+    panelClass: 'snackbar',
+    verticalPosition: 'top',
+    duration: 5000,
+  };
 
   dataSource: any = new MatTableDataSource(
     Array.isArray(this.productsService.source.getValue())
@@ -69,17 +77,31 @@ export class ProductsTableComponent {
   }
 
   delete_item(product: any): void {
-    console.log(product);
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: '',
+      data: product.id,
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.productsService
-          .deleteProducts(product.id)
-          .subscribe(() => this.productsService.updateTable());
+        this.productsService.deleteProducts(product.id).subscribe({
+          next: () => {
+            this.snackBar.open('Deleted successfully', 'Close', {
+              ...this.snackbarOptions,
+            });
+
+            this.productsService.updateTable();
+          },
+          error: (error: any) => {
+            console.error('Error: ', error);
+            this.snackBar.open(
+              `Error: ${error.name}  ${error.status}`,
+              'Close',
+              {
+                ...this.snackbarOptions,
+              },
+            );
+          },
+        });
       }
     });
   }

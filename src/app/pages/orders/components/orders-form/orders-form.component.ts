@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../../shared/modules/material/material.module';
+import { MaterialModule } from '@/shared/modules/material/material.module';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { OrdersService } from '../../services/orders.service';
@@ -67,17 +67,17 @@ export class OrdersFormComponent {
     };
 
     this.ordersService.addOrders(data).subscribe((response: any) => {
+      console.log(response)
       if (response) {
         this.snackBar.open('Success', 'Close', {
           ...this.snackbarOptions,
         });
-
-        this.ordersService.updateTable();
       } else {
         this.snackBar.open(`Error`, 'Close', {
           ...this.snackbarOptions,
         });
       }
+      this.ordersService.updateTable();
     });
 
     this.ordersService.show$.next(false);

@@ -1,15 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../../shared/modules/material/material.module';
+import { MaterialModule } from '@/shared/modules/material/material.module';
 import { OrdersInterface } from '../../../../shared/models';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { OrdersService } from '../../services/orders.service';
-import { MdlCurrencyPipe } from '../../../../shared/pipes/mdl-currency.pipe';
+import { MdlCurrencyPipe } from '@/shared/pipes/mdl-currency.pipe';
 import { MatSort } from '@angular/material/sort';
-import { MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-orders-table',
@@ -22,7 +22,15 @@ export class OrdersTableComponent {
   constructor(
     private ordersService: OrdersService,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
+
+  snackbarOptions: MatSnackBarConfig = {
+    panelClass: 'snackbar',
+    verticalPosition: 'top',
+    duration: 5000,
+  };
+
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>(
     Array.isArray(this.ordersService.source.getValue())
       ? this.ordersService.source.getValue()
@@ -41,12 +49,6 @@ export class OrdersTableComponent {
     'edit',
   ];
 
-  snackbarOptions: MatSnackBarConfig = {
-    panelClass: 'snackbar',
-    verticalPosition: 'top',
-    duration: 2000,
-  };
-
   ngOnInit() {
     this.ordersService.updateTable();
     this.ordersService.source.subscribe((res: any) => {
@@ -64,16 +66,32 @@ export class OrdersTableComponent {
 
   delete_item(order: any): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: '',
+      data: order.orderId,
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.ordersService
-          .deleteOrders(order.orderId)
-          .subscribe(() => this.ordersService.updateTable());
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+        this.ordersService.deleteOrders(order.orderId).subscribe({
+          next: () => {
+            this.snackBar.open('Deleted successfully', 'Close', {
+              ...this.snackbarOptions,
+            });
+
+            this.ordersService.updateTable();
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
+          },
+          error: (error: any) => {
+            console.error('Error: ', error);
+            this.snackBar.open(
+              `Error: ${error.name}  ${error.status}`,
+              'Close',
+              {
+                ...this.snackbarOptions,
+              },
+            );
+          },
+        });
       }
     });
   }

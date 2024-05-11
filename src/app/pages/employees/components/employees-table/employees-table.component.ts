@@ -1,14 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../../shared/modules/material/material.module';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { EmployeesInterface } from '../../../../shared/models';
+import { MaterialModule } from '@/shared/modules/material/material.module';
+import { MatPaginator } from '@angular/material/paginator';
+import { EmployeesInterface } from '@/shared/models';
 import { MatTableDataSource } from '@angular/material/table';
 import { EmployeesService } from '../../services/employees.service';
-import { MdlCurrencyPipe } from '../../../../shared/pipes/mdl-currency.pipe';
+import { MdlCurrencyPipe } from '@/shared/pipes/mdl-currency.pipe';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../../components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@/components/confirm-dialog/confirm-dialog.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-employees-table',
@@ -21,7 +22,15 @@ export class EmployeesTableComponent {
   constructor(
     private employeesService: EmployeesService,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
   ) {}
+
+  snackbarOptions: MatSnackBarConfig = {
+    panelClass: 'snackbar',
+    verticalPosition: 'top',
+    duration: 5000,
+  };
+
   dataSource: MatTableDataSource<EmployeesInterface> =
     new MatTableDataSource<EmployeesInterface>(
       this.employeesService.source.getValue(),
@@ -58,14 +67,30 @@ export class EmployeesTableComponent {
 
   delete_item(employee: any): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: '',
+      data: employee.id,
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.employeesService
-          .deleteEmployees(employee.id)
-          .subscribe(() => this.employeesService.updateTable());
+        this.employeesService.deleteEmployees(employee.id).subscribe({
+          next: () => {
+            this.snackBar.open('Deleted successfully', 'Close', {
+              ...this.snackbarOptions,
+            });
+
+            this.employeesService.updateTable();
+          },
+          error: (error: any) => {
+            console.error('Error: ', error);
+            this.snackBar.open(
+              `Error: ${error.name}  ${error.status}`,
+              'Close',
+              {
+                ...this.snackbarOptions,
+              },
+            );
+          },
+        });
       }
     });
   }
