@@ -3,5 +3,5 @@ export interface ProductsInterface{
   name: string;
   description?: string;
   price: number;
-  ingredients: string;
+  ingredients: any;
 }

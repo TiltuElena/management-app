@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpService } from '@/services/http/http.service';
 import { OrdersInterface } from '../../../shared/models';
+import { ApiRoutes } from '@/ts/enums';
 
 @Injectable({
   providedIn: 'root',
@@ -14,33 +15,33 @@ export class OrdersService {
   currentOrderId$: BehaviorSubject<number> = new BehaviorSubject(0);
   source: BehaviorSubject<any> = new BehaviorSubject({});
   products$: BehaviorSubject<any> = new BehaviorSubject([]);
+  viewProducts$: BehaviorSubject<any> = new BehaviorSubject([]);
 
   addForm: FormGroup = new FormGroup({
     customer: new FormControl('', [Validators.required]),
-    date: new FormControl('', [Validators.required])
+    date: new FormControl('', [Validators.required]),
   });
 
-  url = 'http://localhost:8082';
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpService) {}
 
   getOrders() {
-    return this.httpClient.get(`${this.url}/orders`);
+    return this.httpClient.get(ApiRoutes.Orders);
   }
 
   getCustomers() {
-    return this.httpClient.get(`${this.url}/customers`);
+    return this.httpClient.get(ApiRoutes.Customers);
   }
 
   getOrder(id: string) {
-    return this.httpClient.get(`${this.url}/orders/${id}`);
+    return this.httpClient.get(`${ApiRoutes.Orders}/${id}`);
   }
 
   getProducts() {
-    return this.httpClient.get(`${this.url}/products`);
+    return this.httpClient.get(ApiRoutes.Products);
   }
 
   getProduct(id: string) {
-    return this.httpClient.get(`${this.url}/products/${id}`);
+    return this.httpClient.get(`${ApiRoutes.Products}/${id}`);
   }
 
   updateTable() {
@@ -68,14 +69,14 @@ export class OrdersService {
   }
 
   editOrders(orderId: any, order: any) {
-    return this.httpClient.put(`${this.url}/orders/${orderId}`, order);
+    return this.httpClient.put(`${ApiRoutes.Orders}/${orderId}`, order);
   }
 
   deleteOrders(orderId: number) {
-    return this.httpClient.delete(`${this.url}/orders/${orderId}`);
+    return this.httpClient.delete(`${ApiRoutes.Orders}/${orderId}`);
   }
 
   addOrders(order: any) {
-    return this.httpClient.post(`${this.url}/orders`, order);
+    return this.httpClient.post(ApiRoutes.Orders, order);
   }
 }

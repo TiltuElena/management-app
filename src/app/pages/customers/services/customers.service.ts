@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { CustomersInterface } from '../../../shared/models';
+import { HttpService } from '@/services/http/http.service';
+import { CustomersInterface } from '@/shared/models';
 import { BehaviorSubject } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ApiRoutes } from '@/ts/enums';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,6 @@ export class CustomersService {
   show$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   currentCustomerId$: BehaviorSubject<number> = new BehaviorSubject(0);
   source: BehaviorSubject<any> = new BehaviorSubject({});
-  totalCustomers$: BehaviorSubject<number> = new BehaviorSubject(0);
 
   skip$: BehaviorSubject<number> = new BehaviorSubject(0);
   take$: BehaviorSubject<number> = new BehaviorSubject(0);
@@ -25,21 +25,14 @@ export class CustomersService {
     email: new FormControl('', [Validators.required, Validators.email]),
   });
 
-  url = 'http://localhost:8082';
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpService) {}
 
   getCustomers() {
-    return this.httpClient.get(`${this.url}/customers`);
-  }
-
-  getNrOfCustomers(){
-    return this.httpClient.get(`${this.url}/customers`)
+    return this.httpClient.get(ApiRoutes.Customers);
   }
 
   getCustomerOffset(skip: number, take: number) {
-    return this.httpClient.get(
-      `${this.url}/customers`,
-    );
+    return this.httpClient.get(ApiRoutes.Customers);
   }
 
   updateTable(skip: number, take: number) {
@@ -53,16 +46,16 @@ export class CustomersService {
 
   editCustomer(customerId: number, customerDetails: CustomersInterface) {
     return this.httpClient.put(
-      `${this.url}/customers/${customerId}`,
+      `${ApiRoutes.Customers}/${customerId}`,
       customerDetails,
     );
   }
 
   deleteCustomer(customerId: number) {
-    return this.httpClient.delete(`${this.url}/customers/${customerId}`);
+    return this.httpClient.delete(`${ApiRoutes.Customers}/${customerId}`);
   }
 
   addCustomer(customer: CustomersInterface) {
-    return this.httpClient.post(`${this.url}/customers`, customer);
+    return this.httpClient.post(ApiRoutes.Customers, customer);
   }
 }

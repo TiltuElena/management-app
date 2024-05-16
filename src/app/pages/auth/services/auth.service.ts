@@ -1,27 +1,27 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { UsersInterface } from '../../../shared/models';
+import { HttpService } from '@/services/http/http.service';
+import { UsersInterface } from '@/shared/models';
 import { BehaviorSubject } from 'rxjs';
+import { ApiRoutes } from '@/ts/enums';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  url: string = 'http://localhost:8082';
   private authTokenKey: string = 'auth-token';
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpService) {
     if (this.getToken()) {
       this.isAuthenticated.next(!!this.getToken());
     }
   }
 
   signup(user: UsersInterface) {
-    return this.httpClient.post(`${this.url}/auth/signup`, user);
+    return this.httpClient.post(ApiRoutes.SignUp, user);
   }
 
   signin(user: UsersInterface) {
-    return this.httpClient.post(`${this.url}/auth/signin`, user, {
+    return this.httpClient.post(ApiRoutes.SignIn, user, {
       // headers: {
       //   Authorization: `Bearer ${this.getToken()}`,
       // }

@@ -5,46 +5,64 @@
       Add new employee
     </button>
   </div>
-  <div *ngIf="show$ | async">
+  @if (show$ | async) {
+<div>
     <form [formGroup]="addForm" class="add-form">
       <mat-form-field appearance="outline">
         <mat-label>Enter first name</mat-label>
         <input matInput class="add-input" formControlName="firstName" required>
-        <mat-error *ngIf="addForm.controls['firstName'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+        @if (addForm.controls['firstName'].invalid) {
+<mat-error>{{getErrorRequiredMessage()}}</mat-error>
+}
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Enter last name</mat-label>
         <input matInput class="add-input" formControlName="lastName" required>
-        <mat-error *ngIf="addForm.controls['lastName'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+        @if (addForm.controls['lastName'].invalid) {
+<mat-error>{{getErrorRequiredMessage()}}</mat-error>
+}
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Enter phone number</mat-label>
         <input matInput class="add-input" placeholder="+373 000 000 000" formControlName="phone" required>
-        <mat-error *ngIf="addForm.controls['phone'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+        @if (addForm.controls['phone'].invalid) {
+<mat-error>{{getErrorRequiredMessage()}}</mat-error>
+}
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Enter email</mat-label>
         <input matInput class="add-input" placeholder="email@example.com" formControlName="email" required>
-        <mat-error *ngIf="addForm.controls['email'].invalid">{{getErrorEmailMessage()}}</mat-error>
+        @if (addForm.controls['email'].invalid) {
+<mat-error>{{getErrorEmailMessage()}}</mat-error>
+}
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Enter address</mat-label>
         <input matInput class="add-input" formControlName="address" required>
-        <mat-error *ngIf="addForm.controls['address'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+        @if (addForm.controls['address'].invalid) {
+<mat-error>{{getErrorRequiredMessage()}}</mat-error>
+}
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Enter salary</mat-label>
         <input matInput class="add-input" formControlName="salary" required>
-        <mat-error *ngIf="addForm.controls['salary'].invalid">{{getErrorRequiredMessage()}}</mat-error>
+        @if (addForm.controls['salary'].invalid) {
+<mat-error>{{getErrorRequiredMessage()}}</mat-error>
+}
       </mat-form-field>
 
-      <button mat-button class="submit" *ngIf="isInAddMode$ |async" [disabled]="!addForm.valid" (click)="addEmployee()">Add</button>
-      <button mat-button class="submit" *ngIf="isInEditMode$ | async" [disabled]="!addForm.valid" (click)="editEmployee()">Edit</button>
+      @if (isInAddMode$ |async) {
+<button mat-button class="submit" [disabled]="!addForm.valid" (click)="addEmployee()">Add</button>
+}
+      @if (isInEditMode$ | async) {
+<button mat-button class="submit" [disabled]="!addForm.valid" (click)="editEmployee()">Edit</button>
+}
     </form>
   </div>
+}
 </div>

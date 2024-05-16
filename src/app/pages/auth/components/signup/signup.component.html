@@ -4,13 +4,17 @@
     <mat-form-field appearance="outline">
       <mat-label>Enter email</mat-label>
       <input matInput class="login-input" placeholder="email@example.com" formControlName="email" required>
-      <mat-error *ngIf="loginForm.controls['email'].invalid">{{getErrorEmailMessage()}}</mat-error>
+      @if (loginForm.controls['email'].invalid) {
+<mat-error>{{getErrorEmailMessage()}}</mat-error>
+}
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Enter password</mat-label>
       <input matInput class="login-input" [type]="hide_password ? 'password' : 'text'" formControlName="password" required>
-      <mat-error *ngIf="loginForm.controls['password'].invalid">{{getErrorPasswordMessage()}}</mat-error>
+      @if (loginForm.controls['password'].invalid) {
+<mat-error>{{getErrorPasswordMessage()}}</mat-error>
+}
       <button mat-icon-button matSuffix (click)="hide_password = !hide_password" [attr.aria-label]="'Hide password'"
               [attr.aria-pressed]="hide_password">
         <mat-icon>{{hide_password ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -20,7 +24,9 @@
     <mat-form-field appearance="outline">
       <mat-label>Confirm password</mat-label>
       <input matInput class="login-input" [type]="hide_confirm_password ? 'password' : 'text'" formControlName="confirm_password" required>
-      <mat-error *ngIf="loginForm.controls['confirm_password'].invalid">{{getErrorPasswordMessage()}}</mat-error>
+      @if (loginForm.controls['confirm_password'].invalid) {
+<mat-error>{{getErrorPasswordMessage()}}</mat-error>
+}
       <button mat-icon-button matSuffix (click)="hide_confirm_password = !hide_confirm_password" [attr.aria-label]="'Hide password'"
               [attr.aria-pressed]="hide_confirm_password">
         <mat-icon>{{hide_confirm_password ? 'visibility_off' : 'visibility'}}</mat-icon>

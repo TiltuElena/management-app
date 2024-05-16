@@ -10,6 +10,9 @@ import { MatSort } from '@angular/material/sort';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@/components/confirm-dialog/confirm-dialog.component';
+import { forkJoin, map, switchMap } from 'rxjs';
+import {environment} from "../../../../../environments/environment";
+
 
 @Component({
   selector: 'app-orders-table',
@@ -25,11 +28,7 @@ export class OrdersTableComponent {
     private snackBar: MatSnackBar,
   ) {}
 
-  snackbarOptions: MatSnackBarConfig = {
-    panelClass: 'snackbar',
-    verticalPosition: 'top',
-    duration: 5000,
-  };
+  snackbarOptions: MatSnackBarConfig = environment.snackbarOptions;
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>(
     Array.isArray(this.ordersService.source.getValue())
@@ -97,15 +96,44 @@ export class OrdersTableComponent {
   }
 
   edit_item(order: any): void {
-    this.ordersService.getOrder(order.orderId).subscribe((order: any) => {
-      this.ordersService.addForm.setValue({
-        customer: order.customer.id.toString(),
-        date: order.date,
-      });
+    this.ordersService
+      .getOrder(order.orderId)
+      .pipe(
+        switchMap((order: any) => {
+          // Set the basic form values
+          this.ordersService.addForm.setValue({
+            customer: order.customer.id.toString(),
+            date: order.date,
+          });
 
-      this.ordersService.currentOrderId$.next(order.id);
-      this.ordersService.products$.next(order.products);
-    });
+          // Fetch product details for each product in the order
+          const productObservables = order.products.map((item: any) =>
+            this.ordersService
+              .getProduct(item.productId)
+              .pipe(
+                map((data: any) => ({
+                  name: data.name,
+                  quantity: item.quantity,
+                  productId: data.id,
+                })),
+              ),
+          );
+
+          // Combine all product observables
+          return forkJoin(productObservables).pipe(
+            map((productDetails: any) => ({
+              order,
+              productDetails,
+            })),
+          );
+        }),
+      )
+      .subscribe(({ order, productDetails }) => {
+        // Update the viewProducts$ and other observables
+        this.ordersService.viewProducts$.next(productDetails);
+        this.ordersService.currentOrderId$.next(order.id);
+        this.ordersService.products$.next(order.products);
+      });
 
     this.ordersService.show$.next(true);
     this.ordersService.isInEditMode$.next(true);

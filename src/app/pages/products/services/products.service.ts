@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from "rxjs";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
-import {ProductsInterface} from "../../../shared/models";
+import { BehaviorSubject } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpService } from '@/services/http/http.service';
+import { ProductsInterface } from '@/shared/models';
+import { ApiRoutes } from '@/ts/enums';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductsService {
   isInEditMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -21,40 +22,38 @@ export class ProductsService {
     ingredients: new FormControl([], [Validators.required]),
   });
 
-  url = 'http://localhost:8082'
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpService) {}
 
   getProducts() {
-    return this.httpClient.get(`${this.url}/products`)
+    return this.httpClient.get(ApiRoutes.Products);
   }
 
-  getIngredients(){
-    return this.httpClient.get(`${this.url}/ingredients`)
+  getIngredients() {
+    return this.httpClient.get(ApiRoutes.Ingredients);
   }
 
-  // getProductIngredients(productId: number) {
-  //   return this.httpClient.get(`${this.url}/ingredients/${productId}`)
-  // }
-
-  updateTable(){
+  updateTable() {
     this.getProducts().subscribe((result: any) => {
-      this.source.next(result.items)
-    })
+      this.source.next(result.items);
+    });
   }
 
-  getProduct(productId: number){
-    return this.httpClient.get(`${this.url}/products/${productId}`)
+  getProduct(productId: number) {
+    return this.httpClient.get(`${ApiRoutes.Products}/${productId}`);
   }
 
   editProducts(productId: number, productDetails: any) {
-    return this.httpClient.put(`${this.url}/products/${productId}`, productDetails)
+    return this.httpClient.put(
+      `${ApiRoutes.Products}/${productId}`,
+      productDetails,
+    );
   }
 
   deleteProducts(productId: number) {
-    return this.httpClient.delete( `${this.url}/products/${productId}`)
+    return this.httpClient.delete(`${ApiRoutes.Products}/${productId}`);
   }
 
-  addProducts(product: any){
-    return this.httpClient.post(`${this.url}/products`, product);
+  addProducts(product: any) {
+    return this.httpClient.post(ApiRoutes.Products, product);
   }
 }

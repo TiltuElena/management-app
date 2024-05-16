@@ -1,8 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../../../shared/modules/material/material.module';
+import { MaterialModule } from '@/shared/modules/material/material.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   FormBuilder,
   FormGroup,
@@ -10,18 +9,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { OrdersService } from '../../services/orders.service';
-import { OnlyNumberDirective } from '../../../../shared/directives/only-number.directive';
-
-interface SelectInterface {
-  value: string;
-  viewValue: string;
-}
-
-interface ProductInterface {
-  productId: number;
-  quantity: number;
-  name: string;
-}
+import { OnlyNumberDirective } from '@/shared/directives/only-number.directive';
+import { SelectInterface } from '@/shared/models';
 
 @Component({
   selector: 'app-popup',
@@ -38,7 +27,7 @@ interface ProductInterface {
 export class PopupComponent {
   form: FormGroup;
   chooseProducts: SelectInterface[] = [];
-  products: ProductInterface[] = [];
+  products: any[] = [];
   interim: any[] = [];
 
   constructor(
@@ -106,14 +95,13 @@ export class PopupComponent {
     this.products = [...this.products];
   }
 
-
   deleteProduct(productId: number) {
     this.products = this.products.filter(
       (product) => product.productId !== productId,
     );
   }
 
-  decrementQuantity(product: ProductInterface) {
+  decrementQuantity(product: any) {
     if (product.quantity > 1) {
       product.quantity -= 1;
     } else {
@@ -121,13 +109,15 @@ export class PopupComponent {
     }
   }
 
-  incrementQuantity(product: ProductInterface) {
+  incrementQuantity(product: any) {
     if (product.quantity < 100) {
       product.quantity += 1;
     }
   }
 
   finish() {
+    this.ordersService.viewProducts$.next(this.products);
+
     const prod = this.products.map(({ productId, quantity }) => ({
       productId,
       quantity,

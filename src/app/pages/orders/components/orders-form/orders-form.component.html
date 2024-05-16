@@ -8,23 +8,30 @@
     <mat-icon>add</mat-icon>
     Add new order
   </button>
-  <div *ngIf="show$ | async">
+  @if (show$ | async) {
+  <div>
     <form [formGroup]="addForm" class="add-form">
       <mat-form-field appearance="outline">
         <mat-label>Customer</mat-label>
         <mat-select formControlName="customer" required>
-          <mat-option
-            *ngFor="let customer of customers"
-            [value]="customer.value"
-            >{{ customer.viewValue }}</mat-option
-          >
+          @for (customer of customers; track customer) {
+          <mat-option [value]="customer.value">{{
+            customer.viewValue
+          }}</mat-option>
+          }
         </mat-select>
-        <mat-error *ngIf="addForm.controls['customer'].invalid">{{
-          getErrorRequiredMessage()
-        }}</mat-error>
+        @if (addForm.controls['customer'].invalid) {
+        <mat-error>{{ getErrorRequiredMessage() }}</mat-error>
+        }
       </mat-form-field>
 
-      <button mat-raised-button class="submit" (click)="openDialog()">Add products</button>
+      <mat-form-field appearance="outline">
+        <mat-label>Products</mat-label>
+        <input matInput [value]="inputValue" disabled />
+      </mat-form-field>
+      <button mat-raised-button class="submit" (click)="openDialog()">
+        Add products
+      </button>
 
       <mat-form-field class="date" appearance="outline">
         <mat-label>Choose a date</mat-label>
@@ -39,25 +46,26 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
 
+      @if (isInAddMode$ | async) {
       <button
         mat-button
         class="submit"
-        *ngIf="isInAddMode$ | async"
-        [disabled]="!addForm.valid  || products$.getValue().length < 1"
+        [disabled]="!addForm.valid || products$.getValue().length < 1"
         (click)="addOrder()"
       >
         Add
       </button>
-
+      } @if (isInEditMode$ | async) {
       <button
         mat-button
         class="submit"
-        *ngIf="isInEditMode$ | async"
         [disabled]="!addForm.valid || products$.getValue().length < 1"
         (click)="editOrder()"
       >
         Edit
       </button>
+      }
     </form>
   </div>
+  }
 </div>

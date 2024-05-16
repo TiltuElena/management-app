@@ -5,6 +5,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ProductsService } from '../../services/products.service';
 import { BehaviorSubject } from 'rxjs';
 import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 interface SelectInterface {
   value: string;
@@ -19,7 +20,10 @@ interface SelectInterface {
   styleUrl: './products-form.component.scss',
 })
 export class ProductsFormComponent {
-  constructor(private productsService: ProductsService) {}
+  constructor(
+    private productsService: ProductsService,
+    private snackBar: MatSnackBar,
+  ) {}
 
   chooseIngredients: SelectInterface[] = [];
   ingredients: any = [];
@@ -31,6 +35,11 @@ export class ProductsFormComponent {
   addForm: FormGroup = this.productsService.addForm;
   selectedIngredients: string[] = [];
 
+  snackbarOptions: MatSnackBarConfig = {
+    panelClass: 'snackbar',
+    verticalPosition: 'top',
+    duration: 5000,
+  };
   // getSelectedIngredientsView(): string {
   //   return this.selectedIngredients.map(id => {
   //     const ingredient = this.chooseIngredients.find(ing => ing.value === id);
@@ -93,9 +102,21 @@ export class ProductsFormComponent {
     };
 
     this.ingredients = [];
-    this.productsService
-      .addProducts(data)
-      .subscribe(() => this.productsService.updateTable());
+    this.productsService.addProducts(data).subscribe({
+      next: () => {
+        this.snackBar.open('Success', 'Close', {
+          ...this.snackbarOptions,
+        });
+
+        this.productsService.updateTable();
+      },
+      error: (error: any) => {
+        console.error('Error: ', error);
+        this.snackBar.open(`Error: ${error.name}  ${error.status}`, 'Close', {
+          ...this.snackbarOptions,
+        });
+      },
+    });
     this.productsService.show$.next(false);
     this.addForm.reset();
   }
@@ -108,7 +129,7 @@ export class ProductsFormComponent {
     // const ingredientId = Number(this.addForm.controls['ingredients'].value);
     // this.selectedIngredients  = this.productsService.ingredients$
     //   .getValue()
-      // .map((prod: any) => prod.name);
+    // .map((prod: any) => prod.name);
 
     // if (!this.ingredients.includes(ingredientId)) {
     //   this.ingredients.push(ingredientId);
@@ -122,9 +143,21 @@ export class ProductsFormComponent {
     };
 
     this.ingredients = [];
-    this.productsService
-      .editProducts(this.currentCustomerId, data)
-      .subscribe(() => this.productsService.updateTable());
+    this.productsService.editProducts(this.currentCustomerId, data).subscribe({
+      next: () => {
+        this.snackBar.open('Success', 'Close', {
+          ...this.snackbarOptions,
+        });
+
+        this.productsService.updateTable();
+      },
+      error: (error: any) => {
+        console.error('Error: ', error);
+        this.snackBar.open(`Error: ${error.name}  ${error.status}`, 'Close', {
+          ...this.snackbarOptions,
+        });
+      },
+    });
     this.productsService.isInEditMode$.next(false);
     this.productsService.show$.next(false);
     this.addForm.reset();

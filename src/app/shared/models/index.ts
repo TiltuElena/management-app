@@ -11,3 +11,5 @@ export { DistributorsInterface } from './distributors';
 export { OrdersInterface } from './orders';
 
 export { UsersInterface } from './users';
+
+export { SelectInterface } from './select';

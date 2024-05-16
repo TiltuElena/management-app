@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from "rxjs";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
-import {EmployeesInterface} from "../../../shared/models";
+import { BehaviorSubject } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpService } from '@/services/http/http.service';
+import { EmployeesInterface } from '@/shared/models';
+import { ApiRoutes } from '@/ts/enums';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EmployeesService {
-
   isInEditMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   isInAddMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   show$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -22,30 +22,32 @@ export class EmployeesService {
     email: new FormControl('', [Validators.required, Validators.email]),
     address: new FormControl('', [Validators.required]),
     salary: new FormControl('', [Validators.required]),
-  })
+  });
 
-  url = 'http://localhost:8082'
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpService) {}
 
   getEmployees() {
-    return this.httpClient.get(`${this.url}/employees`)
+    return this.httpClient.get(ApiRoutes.Employees);
   }
 
-  updateTable(){
+  updateTable() {
     this.getEmployees().subscribe((result: any) => {
-      this.source.next(result.items)
-    })
+      this.source.next(result.items);
+    });
   }
 
   editEmployees(employeeId: number, employeeDetails: EmployeesInterface) {
-    return this.httpClient.put(`${this.url}/employees/${employeeId}`, employeeDetails)
+    return this.httpClient.put(
+      `${ApiRoutes.Employees}/${employeeId}`,
+      employeeDetails,
+    );
   }
 
   deleteEmployees(employeeId: number) {
-    return this.httpClient.delete( `${this.url}/employees/${employeeId}`)
+    return this.httpClient.delete(`${ApiRoutes.Employees}/${employeeId}`);
   }
 
-  addEmployees(employee: EmployeesInterface){
-    return this.httpClient.post(`${this.url}/employees`, employee);
+  addEmployees(employee: EmployeesInterface) {
+    return this.httpClient.post(ApiRoutes.Employees, employee);
   }
 }

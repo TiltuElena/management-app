@@ -1,5 +1,6 @@
 <section>
-  <div *ngFor="let page of pages">
+  @for (page of pages; track page) {
+  <div>
     <div class="card">
       <div class="content">
         <mat-icon>{{page.icon}}</mat-icon>
@@ -8,4 +9,5 @@
       </div>
     </div>
   </div>
+}
 </section>

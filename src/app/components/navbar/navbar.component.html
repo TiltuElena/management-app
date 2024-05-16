@@ -3,12 +3,14 @@
     <div id="logo">FoodHeaven</div>
     <mat-divider></mat-divider>
     <mat-nav-list>
-      <a mat-list-item *ngFor="let route of routes" >
+      @for (route of routes; track route) {
+  <a mat-list-item >
         <span class="entry route-page" routerLink="{{route.link}}" routerLinkActive="active" ariaCurrentWhenActive="page">
           <mat-icon>{{route.icon}}</mat-icon>
           <span>{{route.title}}</span>
         </span>
       </a>
+}
       <mat-divider></mat-divider>
 <!--      <a mat-list-item>-->
 <!--        <span class="entry route-page logout" (click)="logout()" routerLinkActive="active" ariaCurrentWhenActive="page">-->

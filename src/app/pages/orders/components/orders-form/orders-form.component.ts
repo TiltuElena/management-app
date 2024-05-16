@@ -7,11 +7,8 @@ import { OrdersService } from '../../services/orders.service';
 import { PopupComponent } from '../popup/popup.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-
-interface SelectInterface {
-  value: string;
-  viewValue: string;
-}
+import { SelectInterface } from '@/shared/models';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-orders-form',
@@ -34,12 +31,9 @@ export class OrdersFormComponent {
   addForm: FormGroup = this.ordersService.addForm;
   products$: BehaviorSubject<any> = this.ordersService.products$;
   customers: SelectInterface[] = [];
+  public inputValue: string = '';
 
-  snackbarOptions: MatSnackBarConfig = {
-    panelClass: 'snackbar',
-    verticalPosition: 'top',
-    duration: 2000,
-  };
+  snackbarOptions: MatSnackBarConfig = environment.snackbarOptions;
 
   ngOnInit() {
     this.show$.subscribe((value: any) => (this.show = value));
@@ -50,6 +44,28 @@ export class OrdersFormComponent {
         viewValue: `${item.firstName} ${item.lastName}`,
       }));
     });
+
+    this.products$.subscribe(() => {
+      this.calculateInputValue();
+    });
+  }
+
+  private calculateInputValue(): void {
+    const products = this.ordersService.viewProducts$.getValue();
+    if (products.length === 0) {
+      this.inputValue = '';
+      return;
+    }
+    const lastProductId = products[products.length - 1].name;
+
+    if (products.length === 1) {
+      this.inputValue = `${lastProductId}`;
+    } else {
+      const othersLabel = products.length === 2 ? 'other' : 'others';
+      this.inputValue = `${lastProductId} (+${
+        products.length - 1
+      } ${othersLabel})`;
+    }
   }
 
   enterAddMode(): void {
@@ -66,18 +82,20 @@ export class OrdersFormComponent {
       products: this.products$.getValue(),
     };
 
-    this.ordersService.addOrders(data).subscribe((response: any) => {
-      console.log(response)
-      if (response) {
+    this.ordersService.addOrders(data).subscribe({
+      next: () => {
         this.snackBar.open('Success', 'Close', {
           ...this.snackbarOptions,
         });
-      } else {
-        this.snackBar.open(`Error`, 'Close', {
+
+        this.ordersService.updateTable();
+      },
+      error: (error: any) => {
+        console.error('Error: ', error);
+        this.snackBar.open(`Error: ${error.name}  ${error.status}`, 'Close', {
           ...this.snackbarOptions,
         });
-      }
-      this.ordersService.updateTable();
+      },
     });
 
     this.ordersService.show$.next(false);
@@ -92,11 +110,23 @@ export class OrdersFormComponent {
       products: this.products$.getValue(),
     };
 
-    console.log(data);
-
     this.ordersService
       .editOrders(this.ordersService.currentOrderId$.getValue(), data)
-      .subscribe(() => this.ordersService.updateTable());
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Success', 'Close', {
+            ...this.snackbarOptions,
+          });
+
+          this.ordersService.updateTable();
+        },
+        error: (error: any) => {
+          console.error('Error: ', error);
+          this.snackBar.open(`Error: ${error.name}  ${error.status}`, 'Close', {
+            ...this.snackbarOptions,
+          });
+        },
+      });
 
     this.ordersService.isInEditMode$.next(false);
     this.ordersService.show$.next(false);

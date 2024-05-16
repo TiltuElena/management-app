@@ -10,6 +10,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@/components/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-employees-table',
@@ -25,11 +26,7 @@ export class EmployeesTableComponent {
     private snackBar: MatSnackBar,
   ) {}
 
-  snackbarOptions: MatSnackBarConfig = {
-    panelClass: 'snackbar',
-    verticalPosition: 'top',
-    duration: 5000,
-  };
+  snackbarOptions: MatSnackBarConfig = environment.snackbarOptions;
 
   dataSource: MatTableDataSource<EmployeesInterface> =
     new MatTableDataSource<EmployeesInterface>(

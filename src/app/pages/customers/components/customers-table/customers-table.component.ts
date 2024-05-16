@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@/components/confirm-dialog/confirm-dialog.component';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-customers-table',
@@ -44,11 +45,7 @@ export class CustomersTableComponent {
     'delete',
   ];
 
-  snackbarOptions: MatSnackBarConfig = {
-    panelClass: 'snackbar',
-    verticalPosition: 'top',
-    duration: 5000,
-  };
+  snackbarOptions: MatSnackBarConfig = environment.snackbarOptions;
 
   ngOnInit() {
     this.customersService.updateTable(0, 10);
@@ -63,7 +60,6 @@ export class CustomersTableComponent {
   }
 
   ngAfterViewInit() {
-    // this.initPaginator();
     this.dataSource.sort = this.sort;
   }
 
